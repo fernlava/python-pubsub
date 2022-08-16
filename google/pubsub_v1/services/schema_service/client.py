@@ -415,7 +415,7 @@ class SchemaServiceClient(metaclass=SchemaServiceClientMeta):
 
             Transport = type(self).get_transport_class(transport)
 
-            emulator_host = os.environ.get("PUBSUB_EMULATOR_HOST")
+            # emulator_host = os.environ.get("PUBSUB_EMULATOR_HOST")
             if emulator_host:
                 if issubclass(Transport, type(self)._transport_registry["grpc"]):
                     channel = grpc.insecure_channel(target=emulator_host)
