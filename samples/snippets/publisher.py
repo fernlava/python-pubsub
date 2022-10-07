@@ -78,6 +78,20 @@ def delete_topic(project_id: str, topic_id: str) -> None:
     print(f"Topic deleted: {topic_path}")
     # [END pubsub_delete_topic]
 
+def publish_message(project_id: str, topic_id: str, message: str) -> None:
+    # [START pubsub_quickstart_publisher]
+    # [START pubsub_publish]
+    from google.cloud import pubsub_v1
+    publisher = pubsub_v1.PublisherClient()
+    # The `topic_path` method creates a fully qualified identifier
+    # in the form `projects/{project_id}/topics/{topic_id}`
+    topic_path = publisher.topic_path(project_id, topic_id)
+    # Data must be a bytestring
+    data = message.encode("utf-8")
+    # When you publish a message, the client returns a future.
+    future = publisher.publish(topic_path, data)
+    print(future.result())
+
 
 def publish_messages(project_id: str, topic_id: str) -> None:
     """Publishes multiple messages to a Pub/Sub topic."""
@@ -434,6 +448,7 @@ if __name__ == "__main__":
 
     publish_parser = subparsers.add_parser("publish", help=publish_messages.__doc__)
     publish_parser.add_argument("topic_id")
+    publish_parser.add_argument("message")
 
     publish_with_custom_attributes_parser = subparsers.add_parser(
         "publish-with-custom-attributes",
@@ -506,3 +521,5 @@ if __name__ == "__main__":
         resume_publish_with_ordering_keys(args.project_id, args.topic_id)
     elif args.command == "detach-subscription":
         detach_subscription(args.project_id, args.subscription_id)
+    elif args.message == "message":
+        publish_message(args.project_id, args.topic_id, args.message)
